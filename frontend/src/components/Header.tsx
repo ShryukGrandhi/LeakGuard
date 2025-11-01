@@ -149,6 +149,4 @@ function MetricCard({ icon, label, value, score, subtext, color }: MetricCardPro
       )}
     </div>
   );
-});
-
-
+}
