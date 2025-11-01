@@ -6,6 +6,7 @@ import { MapView } from './components/MapView';
 import { MapFallback } from './components/MapFallback';
 import { WorldMap } from './components/WorldMap';
 import { SimpleMap } from './components/SimpleMap';
+import { ModernMap } from './components/ModernMap';
 import { WellDetailPanel } from './components/WellDetailPanel';
 import { InvestorView } from './components/InvestorView';
 import { ContractModal } from './components/ContractModal';
@@ -65,7 +66,7 @@ function AppContent() {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <AlertFeed />
-        <SimpleMap />
+        <ModernMap />
         {viewMode === 'operations' && selectedWell && <WellDetailPanel />}
         {viewMode === 'investor' && <InvestorView />}
       </div>
