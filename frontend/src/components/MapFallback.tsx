@@ -1,47 +1,111 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { Map as MapIcon, Layers, ZoomIn, ZoomOut } from 'lucide-react';
 import { HQ_COORDINATES } from '../contexts/AppContext';
 
 export function MapFallback() {
   const { wells, selectedWell, selectWell } = useApp();
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Handle mouse/touch drag
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    setPan({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Handle wheel zoom (trackpad/mouse wheel)
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    setZoom(prev => Math.max(0.5, Math.min(3, prev + delta)));
+  };
+
+  // Zoom controls
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(3, prev + 0.2));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(0.5, prev - 0.2));
+  };
+
+  const handleReset = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
 
   return (
-    <div className="relative flex-1 h-screen bg-slate-900">
-      {/* Simple Grid Background */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: `
-          linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-        `,
-        backgroundSize: '50px 50px'
-      }} />
-
-      {/* Central Map Area */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <svg width="100%" height="100%" viewBox="0 0 1000 600" className="opacity-50">
-          {/* Texas outline (simplified) */}
-          <path
-            d="M 200,100 L 800,100 L 800,500 L 200,500 Z"
-            fill="none"
-            stroke="rgba(59, 130, 246, 0.2)"
-            strokeWidth="2"
-          />
-          <text x="500" y="300" textAnchor="middle" fill="rgba(148, 163, 184, 0.3)" fontSize="48" fontWeight="bold">
-            TEXAS
-          </text>
-        </svg>
-      </div>
-
-      {/* HQ Marker */}
-      <div
-        className="absolute z-10"
+    <div 
+      ref={containerRef}
+      className="relative flex-1 h-screen bg-slate-900 overflow-hidden"
+      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onWheel={handleWheel}
+    >
+      {/* Zoomable/Pannable Content */}
+      <div 
+        className="absolute inset-0 transition-transform duration-100"
         style={{
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)'
+          transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+          transformOrigin: 'center center'
         }}
       >
+        {/* Grid Background */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          width: '200%',
+          height: '200%',
+          left: '-50%',
+          top: '-50%'
+        }} />
+
+        {/* Texas Outline */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <svg width="100%" height="100%" viewBox="0 0 1000 600" className="opacity-50">
+            <path
+              d="M 200,100 L 800,100 L 800,500 L 200,500 Z"
+              fill="none"
+              stroke="rgba(59, 130, 246, 0.2)"
+              strokeWidth="2"
+            />
+            <text x="500" y="300" textAnchor="middle" fill="rgba(148, 163, 184, 0.3)" fontSize="48" fontWeight="bold">
+              TEXAS
+            </text>
+          </svg>
+        </div>
+
+        {/* HQ Marker */}
+        <div
+          className="absolute z-10"
+          style={{
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)'
+          }}
+        >
         <div className="relative">
           <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping" style={{ width: '80px', height: '80px', marginLeft: '-12px', marginTop: '-12px' }}></div>
           <div className="relative w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full border-4 border-white shadow-2xl flex items-center justify-center cursor-pointer">
@@ -53,10 +117,10 @@ export function MapFallback() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Well Markers - Positioned around HQ */}
-      {wells.map((well, idx) => {
+        {/* Well Markers - Positioned around HQ */}
+        {wells.map((well, idx) => {
         const angle = (idx * 360) / wells.length;
         const radius = 200;
         const x = 50 + Math.cos((angle * Math.PI) / 180) * radius / 10;
@@ -128,7 +192,8 @@ export function MapFallback() {
             )}
           </div>
         );
-      })}
+        })}
+      </div>
 
       {/* Map Controls - Top Left */}
       <div className="absolute top-4 left-4 z-30 space-y-3">
@@ -172,18 +237,21 @@ export function MapFallback() {
       {/* Zoom Controls */}
       <div className="absolute bottom-24 right-4 z-30 flex flex-col gap-2">
         <button
+          onClick={handleZoomIn}
           className="bg-slate-950/95 hover:bg-slate-900 text-white p-3 rounded-lg border border-slate-800 transition-all backdrop-blur-sm"
           title="Zoom in"
         >
           <ZoomIn className="w-5 h-5" />
         </button>
         <button
+          onClick={handleZoomOut}
           className="bg-slate-950/95 hover:bg-slate-900 text-white p-3 rounded-lg border border-slate-800 transition-all backdrop-blur-sm"
           title="Zoom out"
         >
           <ZoomOut className="w-5 h-5" />
         </button>
         <button
+          onClick={handleReset}
           className="bg-slate-950/95 hover:bg-slate-900 text-white p-3 rounded-lg border border-slate-800 transition-all backdrop-blur-sm"
           title="Reset view"
         >
@@ -195,9 +263,19 @@ export function MapFallback() {
       <div className="absolute bottom-4 left-4 bg-slate-950/95 border border-slate-800 px-4 py-2 rounded-lg text-xs text-slate-400 backdrop-blur-sm z-30">
         <div className="flex items-center gap-2">
           <MapIcon className="w-3 h-3" />
-          <span className="font-medium text-white">Fallback View</span>
+          <span className="font-medium text-white">Interactive View</span>
+          <span className="text-slate-600">•</span>
+          <span>Zoom: {Math.round(zoom * 100)}%</span>
           <span className="text-slate-600">•</span>
           <span>{wells.length} Wells</span>
+        </div>
+      </div>
+
+      {/* Instructions Overlay */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-5 opacity-30">
+        <div className="text-center text-slate-600">
+          <p className="text-sm font-semibold mb-1">🖱️ Drag to Pan • 🔍 Scroll to Zoom</p>
+          <p className="text-xs">Click markers to view details</p>
         </div>
       </div>
     </div>
