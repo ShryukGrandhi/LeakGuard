@@ -106,7 +106,7 @@ export const Header = React.memo(function Header() {
       </div>
     </div>
   );
-}
+});
 
 interface MetricCardProps {
   icon: React.ReactNode;
