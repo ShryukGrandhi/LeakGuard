@@ -8,6 +8,8 @@ export function WorldMap() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -50,21 +52,68 @@ export function WorldMap() {
       onMouseLeave={handleMouseUp}
       onWheel={handleWheel}
     >
-      {/* Real Map Background */}
+      {/* Map Background */}
       <div 
         className="absolute inset-0"
         style={{
           transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
           transformOrigin: 'center center',
-          transition: isDragging ? 'none' : 'transform 0.1s ease-out',
-          backgroundImage: 'url(https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-95.3698,35,3,0/1200x800@2x?access_token=pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          width: '100%',
-          height: '100%'
+          transition: isDragging ? 'none' : 'transform 0.1s ease-out'
         }}
       >
+        {/* Use Stamen Toner (clean black and white) or OpenStreetMap tiles */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            url('https://stamen-tiles.a.ssl.fastly.net/toner/4/3/6.png'),
+            url('https://tile.openstreetmap.org/4/3/6.png')
+          `,
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          filter: 'invert(1) brightness(0.8) contrast(1.2)',
+          opacity: imageError ? 0 : 1
+        }} 
+        onError={() => setImageError(true)}
+        />
+        
+        {/* Fallback: Clean SVG Map if images fail */}
+        {imageError && (
+          <svg width="100%" height="100%" viewBox="0 0 1000 600" className="absolute inset-0">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(100,116,139,0.1)" strokeWidth="1"/>
+              </pattern>
+            </defs>
+            
+            {/* Background */}
+            <rect width="1000" height="600" fill="#1e293b"/>
+            <rect width="1000" height="600" fill="url(#grid)"/>
+            
+            {/* Continents - Simple but recognizable */}
+            {/* North America */}
+            <path d="M 50,150 Q 100,80 200,90 T 400,110 L 450,130 L 500,120 L 600,140 L 650,160 L 700,200 L 720,250 L 700,300 L 650,350 L 600,380 L 550,400 L 500,420 L 450,430 L 400,440 L 350,445 L 300,440 L 250,430 L 200,410 L 150,380 L 100,340 L 70,280 L 60,220 Z" 
+              fill="#334155" stroke="#475569" strokeWidth="2"/>
+            
+            {/* City dots */}
+            <circle cx="520" cy="290" r="3" fill="#94a3b8" />
+            <text x="530" y="293" fill="#94a3b8" fontSize="10">Houston</text>
+            
+            <circle cx="480" cy="260" r="2" fill="#64748b" />
+            <text x="485" y="263" fill="#64748b" fontSize="9">Dallas</text>
+            
+            <circle cx="200" cy="150" r="2" fill="#64748b" />
+            <text x="205" y="153" fill="#64748b" fontSize="9">Seattle</text>
+            
+            <circle cx="180" cy="230" r="2" fill="#64748b" />
+            <text x="185" y="233" fill="#64748b" fontSize="9">LA</text>
+            
+            <circle cx="530" cy="170" r="2" fill="#64748b" />
+            <text x="535" y="173" fill="#64748b" fontSize="9">Chicago</text>
+            
+            <circle cx="670" cy="180" r="2" fill="#64748b" />
+            <text x="675" y="183" fill="#64748b" fontSize="9">NYC</text>
+          </svg>
+        )}
 
         {/* HQ Marker - Houston */}
         <div
