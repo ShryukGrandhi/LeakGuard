@@ -2,9 +2,10 @@ import React from 'react';
 import { useApp } from '../contexts/AppContext';
 import { DollarSign, TrendingUp, Shield, Calendar, Award, FileText } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { generateESGReport } from '../utils/pdfExport';
 
 export function InvestorView() {
-  const { esgMetrics } = useApp();
+  const { esgMetrics, wells, addToast } = useApp();
 
   const insuranceSavingsData = [
     { month: 'Jan', savings: 15000 },
@@ -164,9 +165,19 @@ export function InvestorView() {
         </div>
 
         {/* Export Button */}
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-pytheas-blue hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-all border border-blue-500">
+        <button 
+          onClick={() => {
+            generateESGReport(esgMetrics, wells);
+            addToast({
+              type: 'success',
+              title: '📄 ESG Report Generated',
+              message: 'Comprehensive audit report downloaded successfully'
+            });
+          }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-500/20"
+        >
           <FileText className="w-4 h-4" />
-          Export ESG Report PDF
+          Export ESG Report
         </button>
 
         {/* Bottom Pitch */}

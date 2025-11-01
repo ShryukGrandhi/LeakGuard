@@ -2,9 +2,10 @@ import React, { useMemo } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { X, AlertTriangle, Activity, TrendingUp, Zap, Plane, Users, Sparkles, FileText, Shield } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { generateWellReport } from '../utils/pdfExport';
 
 export const WellDetailPanel = React.memo(function WellDetailPanel() {
-  const { selectedWell, selectWell, startLeakSimulation, simulationState } = useApp();
+  const { selectedWell, selectWell, startLeakSimulation, simulationState, addToast } = useApp();
 
   if (!selectedWell) return null;
 
@@ -152,28 +153,61 @@ export const WellDetailPanel = React.memo(function WellDetailPanel() {
           <ActionButton
             icon={<Plane className="w-4 h-4" />}
             label="Deploy Drone Inspection"
-            onClick={() => {}}
+            onClick={() => {
+              addToast({
+                type: 'success',
+                title: '🚁 Drone Dispatched',
+                message: `Autonomous drone deployed to ${selectedWell.name}. ETA: 8 minutes.`
+              });
+            }}
             variant="secondary"
           />
 
           <ActionButton
             icon={<Users className="w-4 h-4" />}
             label="Send Repair Crew"
-            onClick={() => {}}
+            onClick={() => {
+              addToast({
+                type: 'info',
+                title: '👷 Crew Contacted',
+                message: `Searching for available repair crews near ${selectedWell.name}...`
+              });
+              setTimeout(() => {
+                addToast({
+                  type: 'success',
+                  title: '✅ Crew Assigned',
+                  message: 'Repair team found. ETA: 22 minutes.'
+                });
+              }, 2000);
+            }}
             variant="secondary"
           />
 
           <ActionButton
             icon={<Sparkles className="w-4 h-4" />}
             label="Mint ESG Credits"
-            onClick={() => {}}
+            onClick={() => {
+              const credits = 25;
+              addToast({
+                type: 'money',
+                title: '💚 ESG Credits Minted',
+                message: `${credits} carbon credits minted for ${selectedWell.name} ($${credits * 50} value)`
+              });
+            }}
             variant="success"
           />
 
           <ActionButton
             icon={<FileText className="w-4 h-4" />}
-            label="Export ESG Audit PDF"
-            onClick={() => {}}
+            label="Export Well Report"
+            onClick={() => {
+              generateWellReport(selectedWell);
+              addToast({
+                type: 'success',
+                title: '📄 Report Generated',
+                message: `Well #${selectedWell.id} report downloaded successfully`
+              });
+            }}
             variant="secondary"
           />
         </div>
