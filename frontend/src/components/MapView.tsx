@@ -42,14 +42,15 @@ export function MapView() {
     console.log('Initializing map...', { mapContainer: mapContainer.current, token: mapboxgl.accessToken });
 
     try {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: MAP_STYLES.find(s => s.id === currentStyle)?.url || MAP_STYLES[0].url,
-        center: HQ_COORDINATES,
-        zoom: 5.5,
-        pitch: 0,
-        attributionControl: false
-      });
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/dark-v11',
+      center: HQ_COORDINATES,
+      zoom: 5.5,
+      pitch: 0,
+      attributionControl: false,
+      interactive: true
+    });
 
       map.current.on('load', () => {
         console.log('Map loaded successfully!');

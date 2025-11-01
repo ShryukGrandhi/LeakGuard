@@ -66,7 +66,7 @@ function AppContent() {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <AlertFeed />
-        <ModernMap />
+        <MapView />
         {viewMode === 'operations' && selectedWell && <WellDetailPanel />}
         {viewMode === 'investor' && <InvestorView />}
       </div>
