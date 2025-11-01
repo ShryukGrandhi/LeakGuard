@@ -1,0 +1,19 @@
+{
+  "name": "leakguard-ai",
+  "version": "1.0.0",
+  "description": "LeakGuard-AI: Multi-agent safety + finance automation platform for oil & gas by Pytheas Energy",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "contracts"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "contracts:compile": "npm run compile --workspace=contracts",
+    "contracts:deploy": "npm run deploy --workspace=contracts"
+  },
+  "keywords": ["blockchain", "oil-gas", "AI", "monitoring", "ESG"],
+  "author": "Pytheas Energy Inc."
+}
+
