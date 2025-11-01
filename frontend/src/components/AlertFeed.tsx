@@ -2,15 +2,20 @@ import React, { useRef, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { Radio, AlertCircle, CheckCircle, Info } from 'lucide-react';
 
-export function AlertFeed() {
+export const AlertFeed = React.memo(function AlertFeed() {
   const { messages } = useApp();
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Auto-scroll to bottom when new messages arrive - DEBOUNCED
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+    const timer = setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [messages.length]); // Only when message count changes
 
   return (
     <div className="w-80 bg-slate-950 border-r border-slate-800 flex flex-col h-screen">
@@ -37,9 +42,9 @@ export function AlertFeed() {
       </div>
     </div>
   );
-}
+});
 
-function MessageItem({ message }: { message: any }) {
+const MessageItem = React.memo(function MessageItem({ message }: { message: any }) {
   const isAgent = message.agent === 'edge' || message.agent === 'master';
   
   const getAgentLabel = () => {

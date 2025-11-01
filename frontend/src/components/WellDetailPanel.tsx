@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { X, AlertTriangle, Activity, TrendingUp, Zap, Plane, Users, Sparkles, FileText, Shield } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
-export function WellDetailPanel() {
+export const WellDetailPanel = React.memo(function WellDetailPanel() {
   const { selectedWell, selectWell, startLeakSimulation, simulationState } = useApp();
 
   if (!selectedWell) return null;
@@ -195,7 +195,7 @@ export function WellDetailPanel() {
       </div>
     </div>
   );
-}
+});
 
 function StatusBadge({ status }: { status: string }) {
   const config = {

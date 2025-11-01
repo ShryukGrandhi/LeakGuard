@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { Shield, MapPin, TrendingDown, Activity, Wallet } from 'lucide-react';
 
-export function Header() {
+export const Header = React.memo(function Header() {
   const { wells, esgMetrics, viewMode, setViewMode, walletState, connectWallet, disconnectWallet, simulationState } = useApp();
 
   const activeWells = wells.filter(w => w.status !== 'LEAK').length;
@@ -149,6 +149,6 @@ function MetricCard({ icon, label, value, score, subtext, color }: MetricCardPro
       )}
     </div>
   );
-}
+});
 
 

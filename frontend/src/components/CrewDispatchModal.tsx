@@ -42,6 +42,12 @@ export function CrewDispatchModal({ wellName, onComplete }: CrewDispatchModalPro
   ];
 
   useEffect(() => {
+    let mounted = true;
+    let hasRun = false;
+    
+    if (hasRun) return;
+    hasRun = true;
+
     const timeline = [
       { stage: 'searching', duration: 1500 },
       { stage: 'found', duration: 1000 },
@@ -54,28 +60,35 @@ export function CrewDispatchModal({ wellName, onComplete }: CrewDispatchModalPro
     let currentProgress = 0;
 
     const runStage = () => {
-      if (currentIndex < timeline.length) {
-        const current = timeline[currentIndex];
-        setStage(current.stage as any);
-        
-        // Animate progress
-        const progressInterval = setInterval(() => {
-          currentProgress += 2;
-          setProgress(Math.min(currentProgress, (currentIndex + 1) * 20));
-        }, current.duration / 50);
-
-        setTimeout(() => {
-          clearInterval(progressInterval);
-          currentIndex++;
-          runStage();
-        }, current.duration);
-      } else {
-        setTimeout(onComplete, 1000);
+      if (!mounted || currentIndex >= timeline.length) {
+        if (mounted) setTimeout(onComplete, 1000);
+        return;
       }
+
+      const current = timeline[currentIndex];
+      setStage(current.stage as any);
+      
+      // Animate progress
+      const progressInterval = setInterval(() => {
+        if (!mounted) {
+          clearInterval(progressInterval);
+          return;
+        }
+        currentProgress += 2;
+        setProgress(Math.min(currentProgress, (currentIndex + 1) * 20));
+      }, current.duration / 50);
+
+      setTimeout(() => {
+        clearInterval(progressInterval);
+        currentIndex++;
+        runStage();
+      }, current.duration);
     };
 
     runStage();
-  }, [onComplete]);
+
+    return () => { mounted = false; };
+  }, []); // EMPTY DEPS - Run only once on mount
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center animate-fadeIn">

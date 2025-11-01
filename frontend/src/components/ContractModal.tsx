@@ -46,9 +46,14 @@ contract EmergencyResponse_${wellId} {
 
   useEffect(() => {
     let mounted = true;
+    let hasRun = false;
+    
+    if (hasRun) return;
+    hasRun = true;
     
     // Step 1: Show analysis data coming in
     const showAnalysis = async () => {
+      if (!mounted) return;
       setCurrentStep('analyzing');
       const analysisSteps = [
         `✓ Methane level: ${(2.3 + Math.random() * 0.5).toFixed(2)} PPM (CRITICAL)`,
@@ -68,6 +73,7 @@ contract EmergencyResponse_${wellId} {
 
     // Step 2: Show calculations
     const showCalculations = async () => {
+      if (!mounted) return;
       setCurrentStep('calculating');
       await new Promise(resolve => setTimeout(resolve, 500));
       
@@ -88,6 +94,7 @@ contract EmergencyResponse_${wellId} {
 
     // Step 3: Type out contract code
     const typeContract = async () => {
+      if (!mounted) return;
       setCurrentStep('generating');
       await new Promise(resolve => setTimeout(resolve, 500));
       
@@ -101,17 +108,19 @@ contract EmergencyResponse_${wellId} {
 
     // Step 4: Compile
     const compile = async () => {
+      if (!mounted) return;
       setCurrentStep('compiling');
       await new Promise(resolve => setTimeout(resolve, 800));
     };
 
     // Step 5: Ready
     const finalize = async () => {
+      if (!mounted) return;
       setCurrentStep('ready');
       setShowApproval(true);
     };
 
-    // Run the sequence
+    // Run the sequence ONCE
     (async () => {
       await showAnalysis();
       await showCalculations();
@@ -121,7 +130,7 @@ contract EmergencyResponse_${wellId} {
     })();
 
     return () => { mounted = false; };
-  }, [wellId, wellName, fullContractCode]);
+  }, []); // EMPTY DEPS - Run only once on mount
 
   const contractAmount = 5000;
   const estimatedTime = 45;

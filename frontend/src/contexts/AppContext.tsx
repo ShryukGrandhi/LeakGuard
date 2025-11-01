@@ -112,8 +112,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [showCrewModal, setShowCrewModal] = useState(false);
   const [currentSimulationWell, setCurrentSimulationWell] = useState<number | null>(null);
 
-  // Initialize edge agents for all wells
+  // Initialize edge agents for all wells - RUN ONCE
   useEffect(() => {
+    let initialized = false;
+    
+    if (initialized) return;
+    initialized = true;
+
+    console.log('Initializing edge agents...');
+    
     wells.forEach(well => {
       const agent = masterAgent.registerEdgeAgent(well.id);
       // Initialize with some baseline readings
@@ -122,7 +129,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    // Subscribe to master agent events
+    // Subscribe to master agent events - ONCE
     masterAgent.onMessage((message) => {
       setMessages(prev => [...prev, message].slice(-50)); // Keep last 50 messages
     });
@@ -133,7 +140,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     // Initial system message
     setTimeout(() => {
-      masterAgent.onMessage((msg) => setMessages(prev => [...prev, msg]));
       setMessages([{
         id: 'init',
         timestamp: Date.now(),
@@ -142,9 +148,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         type: 'success'
       }]);
     }, 500);
-  }, []);
+  }, []); // EMPTY - Run only once
 
-  // Update well data periodically
+  // Update well data periodically - OPTIMIZED
   useEffect(() => {
     const interval = setInterval(() => {
       setWells(prevWells => {
@@ -157,8 +163,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             const newReading = 2.5 + Math.random() * 0.5; // Above threshold
             agent.addReading(newReading);
           } else {
-            // Normal operation
-            const newReading = well.methaneLevel + (Math.random() - 0.5) * 0.3;
+            // Normal operation - less frequent updates when not simulating
+            const newReading = well.methaneLevel + (Math.random() - 0.5) * 0.1;
             agent.addReading(Math.max(0, newReading));
           }
 
@@ -172,18 +178,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
           };
         });
       });
-    }, 2000);
+    }, 3000); // Changed from 2000ms to 3000ms - less frequent
 
     return () => clearInterval(interval);
-  }, [simulationState]);
+  }, [simulationState.active, simulationState.wellId]); // Only re-run when simulation changes
 
-  // Update ESG metrics
+  // Update ESG metrics - LESS FREQUENT
   useEffect(() => {
     const interval = setInterval(() => {
       setESGMetrics(masterAgent.getESGMetrics());
-    }, 1000);
+    }, 2000); // Changed from 1000ms to 2000ms
     return () => clearInterval(interval);
-  }, []);
+  }, [masterAgent]); // Only masterAgent dependency
 
   const selectWell = (wellId: number | null) => {
     if (wellId === null) {

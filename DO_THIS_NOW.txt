@@ -1,0 +1,37 @@
+============================================
+   LEAKGUARD-AI - DO THIS NOW!
+============================================
+
+1. OPEN BROWSER:
+   http://localhost:3002
+
+2. REFRESH (F5)
+
+3. CLICK GREEN WELL #34
+
+4. CLICK RED "START LEAK SIMULATION" BUTTON
+
+5. WATCH:
+   - Data analysis
+   - Cost calculations  
+   - CONTRACT CODE TYPING OUT
+   - Compilation
+
+6. CLICK "APPROVE & DEPLOY"
+
+7. WATCH CREW DISPATCH
+
+8. SEE $27,500 VALUE CREATED
+
+9. WIN!
+
+============================================
+
+GITHUB: https://github.com/ShryukGrandhi/LeakGuard
+
+DEMO: http://localhost:3002
+
+GO! 🚀
+
+============================================
+
