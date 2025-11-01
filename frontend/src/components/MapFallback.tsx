@@ -84,33 +84,33 @@ export function MapFallback() {
               backgroundSize: '800px 800px',
               backgroundPosition: 'center',
               backgroundRepeat: 'repeat',
-              opacity: 0.4,
-              filter: 'grayscale(100%) brightness(0.6)'
+              opacity: 0.3,
+              filter: 'grayscale(100%) contrast(1.5) brightness(0.4) invert(1)'
             }}
           />
           
           {/* Overlay grid for depth */}
           <div className="absolute inset-0" style={{
             backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
+              linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
             `,
             backgroundSize: '100px 100px'
           }} />
 
           {/* Location marker - USA/Texas region */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <svg width="100%" height="100%" viewBox="0 0 1000 600" className="opacity-20">
+            <svg width="100%" height="100%" viewBox="0 0 1000 600" className="opacity-30">
               {/* USA outline (simplified) */}
               <path
                 d="M 100,200 L 150,180 L 200,190 L 250,170 L 300,180 L 350,190 L 400,180 L 450,200 L 500,190 L 550,210 L 600,200 L 650,220 L 700,210 L 750,230 L 800,220 L 850,240 L 900,250 L 900,400 L 850,420 L 800,410 L 750,430 L 700,420 L 650,440 L 600,430 L 550,450 L 500,440 L 450,460 L 400,450 L 350,470 L 300,460 L 250,480 L 200,470 L 150,490 L 100,480 Z"
-                fill="rgba(59, 130, 246, 0.1)"
-                stroke="rgba(59, 130, 246, 0.3)"
+                fill="rgba(255, 255, 255, 0.02)"
+                stroke="rgba(255, 255, 255, 0.15)"
                 strokeWidth="2"
               />
               {/* Texas highlight */}
-              <circle cx="500" cy="380" r="80" fill="rgba(59, 130, 246, 0.15)" stroke="rgba(59, 130, 246, 0.4)" strokeWidth="2" strokeDasharray="5,5" />
-              <text x="500" y="390" textAnchor="middle" fill="rgba(59, 130, 246, 0.5)" fontSize="20" fontWeight="bold">
+              <circle cx="500" cy="380" r="80" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="2" strokeDasharray="5,5" />
+              <text x="500" y="390" textAnchor="middle" fill="rgba(255, 255, 255, 0.25)" fontSize="20" fontWeight="bold">
                 TEXAS
               </text>
             </svg>
