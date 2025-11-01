@@ -50,68 +50,21 @@ export function WorldMap() {
       onMouseLeave={handleMouseUp}
       onWheel={handleWheel}
     >
-      {/* Zoomable Content */}
+      {/* Real Map Background */}
       <div 
         className="absolute inset-0"
         style={{
           transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
           transformOrigin: 'center center',
-          transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+          transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+          backgroundImage: 'url(https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-95.3698,35,3,0/1200x800@2x?access_token=pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: '100%'
         }}
       >
-        <svg width="100%" height="100%" viewBox="0 0 1000 600" className="absolute inset-0">
-          {/* Ocean */}
-          <rect width="1000" height="600" fill="#1a202c" />
-          
-          {/* North America landmass - simplified */}
-          <path d="M 100,50 L 200,40 L 300,60 L 400,50 L 500,70 L 600,60 L 700,80 L 750,100 L 800,120 L 850,150 L 900,180 L 920,220 L 930,260 L 920,300 L 900,340 L 850,360 L 800,370 L 750,380 L 700,400 L 650,420 L 600,430 L 550,450 L 500,460 L 450,470 L 400,480 L 350,490 L 300,500 L 250,510 L 200,500 L 150,480 L 100,450 L 80,400 L 70,350 L 60,300 L 50,250 L 40,200 L 50,150 L 70,100 Z" 
-            fill="#374151" stroke="#4b5563" strokeWidth="1" />
-          
-          {/* Canada */}
-          <path d="M 120,70 L 250,50 L 400,60 L 550,70 L 700,90 L 850,140 L 900,170 L 880,140 L 820,110 L 750,90 L 650,80 L 550,75 L 450,70 L 350,65 L 250,60 L 150,70 Z" 
-            fill="#4b5563" stroke="#6b7280" strokeWidth="0.5" />
-          
-          {/* USA */}
-          <path d="M 150,150 L 250,140 L 350,145 L 450,150 L 550,160 L 650,170 L 750,180 L 850,200 L 900,240 L 880,280 L 850,320 L 800,340 L 750,350 L 700,370 L 650,380 L 600,390 L 550,400 L 500,410 L 450,415 L 400,420 L 350,425 L 300,430 L 250,420 L 200,400 L 150,370 L 120,340 L 100,300 L 90,260 L 85,220 L 90,180 Z" 
-            fill="#374151" stroke="#6b7280" strokeWidth="1" />
-          
-          {/* Mexico */}
-          <path d="M 250,430 L 300,440 L 350,450 L 400,460 L 450,470 L 500,475 L 550,465 L 580,450 L 600,430 L 580,460 L 550,480 L 500,490 L 450,495 L 400,490 L 350,480 L 300,470 L 250,455 Z" 
-            fill="#4b5563" stroke="#6b7280" strokeWidth="0.5" />
-
-          {/* State borders (subtle) */}
-          <line x1="450" y1="200" x2="450" y2="400" stroke="#6b7280" strokeWidth="0.5" opacity="0.3" strokeDasharray="2,2" />
-          <line x1="550" y1="200" x2="550" y2="400" stroke="#6b7280" strokeWidth="0.5" opacity="0.3" strokeDasharray="2,2" />
-          <line x1="350" y1="200" x2="350" y2="400" stroke="#6b7280" strokeWidth="0.5" opacity="0.3" strokeDasharray="2,2" />
-          
-          {/* Major Cities - Light Grey Labels */}
-          <text x="180" y="120" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Vancouver</text>
-          <text x="190" y="135" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Seattle</text>
-          <text x="180" y="165" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Portland</text>
-          <text x="160" y="195" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">San Francisco</text>
-          <text x="170" y="230" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Los Angeles</text>
-          <text x="180" y="250" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">San Diego</text>
-          <text x="280" y="220" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Phoenix</text>
-          <text x="290" y="185" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Las Vegas</text>
-          <text x="350" y="200" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Denver</text>
-          <text x="420" y="165" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Minneapolis</text>
-          <text x="500" y="170" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Chicago</text>
-          <text x="450" y="260" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Dallas</text>
-          <text x="520" y="290" fill="#9ca3af" fontSize="9" fontWeight="bold">Houston</text>
-          <text x="470" y="310" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">San Antonio</text>
-          <text x="590" y="280" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">New Orleans</text>
-          <text x="620" y="240" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Atlanta</text>
-          <text x="720" y="250" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Miami</text>
-          <text x="680" y="200" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Washington</text>
-          <text x="720" y="180" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">New York</text>
-          <text x="750" y="160" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Boston</text>
-          <text x="300" y="460" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Mexico City</text>
-          <text x="550" y="100" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Toronto</text>
-          <text x="640" y="110" fill="#9ca3af" fontSize="8" fontFamily="sans-serif">Montreal</text>
-
-          {/* Texas region highlight */}
-          <circle cx="500" cy="290" r="100" fill="none" stroke="#3b82f6" strokeWidth="1" strokeDasharray="5,5" opacity="0.3" />
-        </svg>
 
         {/* HQ Marker - Houston */}
         <div
