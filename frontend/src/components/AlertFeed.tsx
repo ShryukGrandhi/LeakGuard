@@ -90,5 +90,4 @@ const MessageItem = React.memo(function MessageItem({ message }: { message: any 
       </div>
     </div>
   );
-}
-
+});
